@@ -45,4 +45,28 @@ public class EstacionamentoController {
 	public ModelAndView editar(@PathVariable("id") int codigo) {
 		return new ModelAndView("estacionamento/edicao").addObject("estacionamento", dao.buscar(codigo));
 	}
+	
+	@Transactional
+	@PostMapping("editar")
+	public ModelAndView editar(Estacionamento estacionamento, RedirectAttributes redirect) {
+		try {
+			dao.atualizar(estacionamento);
+			redirect.addFlashAttribute("msg", "Atualizado");
+		} catch (Exception e) {
+			return new ModelAndView("estacionamento/edicao").addObject("msg", e.getMessage());
+		}
+		return new ModelAndView("redirect:/estacionamento/listar");
+	}
+	
+	@Transactional
+	@PostMapping("excluir")
+	public ModelAndView excluir(int codigo, RedirectAttributes redirect) {
+		try {
+			dao.remover(codigo);
+			redirect.addFlashAttribute("msg", "Excluido!");
+		} catch (Exception e) {
+			redirect.addFlashAttribute("msg", e.getMessage());
+		}
+		return new ModelAndView("redirect:/estacionamento/listar");
+	}
 }
